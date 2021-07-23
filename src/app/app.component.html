@@ -1,0 +1,127 @@
+<nz-spin [nzSpinning]="loading">
+  <div style="padding: 24px">
+    <nz-card>
+      <nz-row nzGutter="16">
+        <nz-col nzSpan="12">
+          <form [formGroup]="form">
+            <nz-row nzGutter="24">
+              <nz-col nzSpan="12">
+                <nz-form-item>
+                  <nz-form-control>
+                    <nz-form-label>Employee Code</nz-form-label>
+                    <input nz-input formControlName="emp_Code" readonly>
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-control>
+                    <nz-form-label>Date of Joining</nz-form-label>
+                    <nz-date-picker style="width: 100%" formControlName="doJ"></nz-date-picker>
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+              <nz-col nzSpan="12">
+                <nz-form-item>
+                  <nz-form-control>
+                    <nz-form-label>Employee Name</nz-form-label>
+                    <input nz-input formControlName="emp_Name">
+                  </nz-form-control>
+                </nz-form-item>
+                <p style="color: red" *ngIf="form.get('emp_Name').dirty && form.get('emp_Name').errors?.nameError">
+                  Employee name should not consist of numerical values
+                </p>
+                <p style="color: red" *ngIf="form.get('emp_Name').dirty && form.get('emp_Name').errors?.lengthError">
+                  Employee name should be more than 4 characters
+                </p>
+                <nz-form-item>
+                  <nz-form-control>
+                    <nz-form-label>Position</nz-form-label>
+                    <nz-select formControlName="position_Code">
+                      <nz-option *ngFor="let item of positions" [nzLabel]="item.position_Desc" [nzValue]="item.position_Code"></nz-option>
+                    </nz-select>
+                  </nz-form-control>
+                </nz-form-item>
+              </nz-col>
+            </nz-row>
+          </form>
+          <div>
+            <span>Experience Details</span>
+            <button style="margin-left: 20px" nz-button nzType="primary" (click)="addRow()">ADD ROW</button>
+          </div>
+          <nz-table #basicTable [nzData]="qualifications" nzShowPagination="false" nzFrontPagination="false">
+            <thead>
+            <tr>
+              <th>Qualifications</th>
+              <th>Completed Year</th>
+              <th>Grade</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of basicTable.data">
+              <td>
+                <input nz-input style="width: 200px" [(ngModel)]="data.qualification">
+              </td>
+              <td>
+                <nz-date-picker style="width: 200px" [(ngModel)]="data.completed_year"></nz-date-picker>
+              </td>
+              <td>
+                <nz-select style="width: 200px" [(ngModel)]="data.grade">
+                  <nz-option [nzValue]="1" [nzLabel]="'A'"></nz-option>
+                  <nz-option [nzValue]="2" [nzLabel]="'B'"></nz-option>
+                  <nz-option [nzValue]="3" [nzLabel]="'C'"></nz-option>
+                </nz-select>
+              </td>
+              <td>
+                <button nz-button nzType="primary" (click)="removeRow(data.num)">REMOVE</button>
+              </td>
+            </tr>
+            </tbody>
+          </nz-table>
+          <nz-row nzGutter="16">
+            <nz-col nzSpan="16"></nz-col>
+            <nz-col nzSpan="4">
+              <button nz-button nzBlock nzType="primary" [disabled]="form.invalid" (click)="save()">SAVE</button>
+            </nz-col>
+            <nz-col nzSpan="4">
+              <button nz-button nzBlock nzType="primary" [disabled]="form.invalid" (click)="clearForm()">CLEAR</button>
+            </nz-col>
+          </nz-row>
+        </nz-col>
+        <nz-col nzSpan="12">
+          <nz-table #employeeTable [nzData]="employeeList">
+            <thead>
+            <tr>
+              <th>Employee Code</th>
+              <th>Employee Name</th>
+              <th>Position</th>
+              <th>Date of Joining</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let data of employeeTable.data">
+              <td>
+                {{data.emp_Code}}
+              </td>
+              <td>
+                {{data.emp_Name}}
+              </td>
+              <td>
+                {{data?.position?.position_Desc}}
+              </td>
+              <td>
+                {{data.doJ | amDateFormat: 'LL'}}
+              </td>
+              <td>
+                <button nz-button nzType="primary" (click)="getEmployee(data)">MODIFY</button>
+                <nz-divider nzType="vertical"></nz-divider>
+                <button nz-button nzType="primary" (click)="delete(data.emp_ID)" nzDanger>DELETE</button>
+              </td>
+            </tr>
+            </tbody>
+          </nz-table>
+        </nz-col>
+      </nz-row>
+    </nz-card>
+  </div>
+</nz-spin>
